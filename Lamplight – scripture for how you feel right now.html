@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lamplight – scripture for how you feel right now</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3efe6;--card:#faf7f0;--ink:#23222a;--mute:#6b6a70;--line:#d9d3c4;--c:#b8872a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#14161f;--card:#1b1e2a;--ink:#ece6d6;--mute:#9b9ba3;--line:#2b2e3b}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#14161f;--card:#1b1e2a;--ink:#ece6d6;--mute:#9b9ba3;--line:#2b2e3b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Instrument Sans",system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:20px 20px 48px}
+h1{font:500 1.05rem "Spectral",Georgia,serif;margin:0;color:var(--mute);letter-spacing:.02em}
+.orbwrap{display:grid;place-items:center;padding:28px 0 8px}
+.orb{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 38% 32%,color-mix(in srgb,var(--c) 55%,#fff),var(--c) 55%,color-mix(in srgb,var(--c) 60%,#000));
+box-shadow:0 0 70px 8px color-mix(in srgb,var(--c) 45%,transparent);animation:b var(--dur,4s) ease-in-out infinite;transition:background .8s,box-shadow .8s}
+@keyframes b{50%{transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.orb{animation:none}}
+.state{text-align:center;margin:10px 0 2px;font:500 1.6rem "Spectral",Georgia,serif}
+.sub{text-align:center;color:var(--mute);margin:0 0 18px;min-height:3em;font-size:.92rem}
+.read{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.read div{border:1px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center;background:var(--card)}
+.read b{display:block;font-size:1.15rem;font-weight:600}
+.read span{font-size:.72rem;color:var(--mute)}
+.verse{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:6px;padding:22px 22px 18px;transition:border-color .8s}
+.verse p{font:400 1.45rem/1.55 "Spectral",Georgia,serif;margin:0 0 12px;transition:opacity .5s}
+.verse cite{font-style:normal;font-weight:600;font-size:.9rem}
+.verse small{display:block;color:var(--mute);margin-top:10px;font-size:.82rem}
+.fade p,.fade cite{opacity:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+button{font:600 .9rem "Instrument Sans",sans-serif;padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--c)}button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+button.on{background:var(--c);border-color:var(--c);color:#14161f}
+.chips button{font-weight:400;padding:6px 12px;border-radius:20px}
+label{font-size:.88rem;color:var(--mute)}input{width:64px;padding:6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+#msg{font-size:.88rem;color:var(--mute);min-height:1.4em}
+details{margin-top:18px;font-size:.88rem;color:var(--mute)}summary{cursor:pointer}
+details li{margin:4px 0}
+.note{margin-top:22px;font-size:.8rem;color:var(--mute);border-top:1px solid var(--line);padding-top:14px}
+#lock{position:fixed;inset:0;z-index:20;background:var(--bg);display:grid;place-items:center;padding:24px;text-align:center;overflow:auto}
+#lock[hidden],main[hidden]{display:none}
+#lock .orb{margin:0 auto 22px}
+#lock h2{font:500 1.6rem "Spectral",Georgia,serif;margin:0 0 6px}
+#lock p{color:var(--mute);max-width:32ch;margin:0 auto 20px;font-size:.92rem}
+#lock button{padding:12px 22px}
+#lock .ghost{border:0;background:none;text-decoration:underline;font-weight:400;color:var(--mute);padding:6px}
+.lm{color:var(--mute);font-size:.88rem;margin:14px auto 6px;max-width:34ch;min-height:2.6em}
+.ov{position:fixed;inset:0;z-index:19;background:var(--bg);display:grid;place-items:center;padding:24px;text-align:center;overflow:auto}
+.ov[hidden]{display:none}
+.ov h2{font:500 1.6rem "Spectral",Georgia,serif;margin:0 0 6px}
+.ov p{color:var(--mute);max-width:34ch;margin:0 auto 16px;font-size:.92rem}
+#wave{width:100%;max-width:360px;height:90px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.bar{height:6px;border-radius:3px;background:var(--line);max-width:360px;margin:14px auto 0;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--c)}
+#cam{position:fixed;width:1px;height:1px;opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="lock"><div>
+<div class="orb"></div>
+<h2>Lamplight</h2>
+<p id="lockSub"></p>
+<button id="bUnlock" class="on"></button>
+<div class="lm" id="lockMsg" role="status"></div>
+<button id="bSkip" class="ghost" hidden>Continue without biometrics</button><br>
+<button id="bReset" class="ghost" hidden>Set up biometrics again</button>
+</div></div>
+<div id="scan" class="ov" hidden><div style="width:100%;max-width:420px">
+<h2 id="scT"></h2><p id="scP"></p>
+<canvas id="wave" width="360" height="90"></canvas>
+<div class="bar"><i id="bar"></i></div>
+<div class="lm" id="scM" role="status"></div>
+<button id="scGo" class="on"></button> <button id="scX"></button>
+</div></div>
+<video id="cam" playsinline muted></video><canvas id="px" width="24" height="24" hidden></canvas>
+<main id="app" hidden>
+<h1>Lamplight</h1>
+<div class="orbwrap"><div class="orb" id="orb"></div></div>
+<div class="state" id="state">Listening for you</div>
+<p class="sub" id="why">Connect a heart-rate band, turn on the microphone, or try the demo.</p>
+
+<div class="read" aria-live="off">
+<div><b id="rHr">–</b><span>heart rate</span></div>
+<div><b id="rHrv">–</b><span>variability</span></div>
+<div><b id="rP">–</b><span>pitch Hz</span></div>
+<div><b id="rV">–</b><span>tone range</span></div>
+</div>
+
+<section class="verse" id="verse" aria-live="polite">
+<p id="vt">A verse will appear here when your state is steady.</p>
+<cite id="vr"></cite>
+<small id="vm"></small>
+</section>
+<div class="row"><button id="bNext">Show another verse</button>
+<button id="bScan">Scan again</button></div>
+
+<div class="row">
+<button id="bBle">Connect heart-rate band</button>
+<button id="bMic">Use microphone</button>
+<button id="bDemo">Try demo</button>
+<button id="bLock">Lock</button>
+</div>
+<div class="row chips" id="chips" hidden></div>
+<div class="row"><label>Resting heart rate <input id="rest" type="number" min="40" max="100" value="68"></label></div>
+<div id="msg" role="status"></div>
+
+<details><summary>Verse library (<span id="cnt"></span> verses, KJV)</summary><ul id="lib"></ul></details>
+
+<p class="note">Lamplight offers a reflective prompt based on rough patterns in heart rate and voice. It is not a medical or diagnostic tool and can be wrong. Audio is analysed on this device and is never recorded or uploaded. If you are in distress or thinking of harming yourself, please contact a local emergency number or a crisis line.</p>
+</main>
+
+<script>
+const LIB={
+unsettled:[["1 Peter 5:7","Casting all your care upon him; for he careth for you."],["Psalm 94:19","In the multitude of my thoughts within me thy comforts delight my soul."],["Isaiah 41:10","Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee."],["John 14:27","Peace I leave with you, my peace I give unto you: let not your heart be troubled, neither let it be afraid."]],
+heated:[["Proverbs 15:1","A soft answer turneth away wrath: but grievous words stir up anger."],["James 1:19","Let every man be swift to hear, slow to speak, slow to wrath."],["Psalm 37:8","Cease from anger, and forsake wrath: fret not thyself in any wise to do evil."],["Ephesians 4:26","Be ye angry, and sin not: let not the sun go down upon your wrath."]],
+heavy:[["Psalm 34:18","The LORD is nigh unto them that are of a broken heart; and saveth such as be of a contrite spirit."],["Psalm 42:11","Why art thou cast down, O my soul? and why art thou disquieted within me? hope thou in God."],["Matthew 11:28","Come unto me, all ye that labour and are heavy laden, and I will give you rest."],["Psalm 30:5","Weeping may endure for a night, but joy cometh in the morning."]],
+settled:[["Psalm 46:10","Be still, and know that I am God."],["Psalm 23:2","He maketh me to lie down in green pastures: he leadeth me beside the still waters."],["Isaiah 26:3","Thou wilt keep him in perfect peace, whose mind is stayed on thee."]],
+bright:[["Psalm 118:24","This is the day which the LORD hath made; we will rejoice and be glad in it."],["Nehemiah 8:10","The joy of the LORD is your strength."],["Philippians 4:4","Rejoice in the Lord alway: and again I say, Rejoice."],["Psalm 100:1","Make a joyful noise unto the LORD, all ye lands."]]};
+const ST={
+unsettled:{n:"Unsettled",c:"#c98a8a",d:"Your body and voice suggest tension or worry."},
+heated:{n:"Heated",c:"#d9693f",d:"Your body and voice suggest frustration or intensity."},
+heavy:{n:"Heavy",c:"#6f86b8",d:"Your body and voice suggest low energy or sadness."},
+settled:{n:"Settled",c:"#7fa58f",d:"Your body and voice suggest calm."},
+bright:{n:"Bright",c:"#e8b04a",d:"Your body and voice suggest lift and energy."}};
+const DEMO={
+settled:{hr:64,hrv:62,ps:0,pv:.10,loud:.035},unsettled:{hr:96,hrv:22,ps:.12,pv:.08,loud:.04},
+heated:{hr:104,hrv:28,ps:.10,pv:.11,loud:.09},heavy:{hr:58,hrv:30,ps:-.08,pv:.04,loud:.018},
+bright:{hr:84,hrv:55,ps:.06,pv:.17,loud:.06}};
+
+const $=id=>document.getElementById(id),clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const S={hr:null,hrv:null,hrT:0,pm:null,pv:null,ps:null,loud:null},idx={};
+let rr=[],ph=[],lastVoice=0,base=null,mic=false,demo=null,cur=null,cand=null,streak=0,loudEma=0;
+
+const say=t=>$("msg").textContent=t;
+$("cnt").textContent=Object.values(LIB).flat().length;
+$("lib").innerHTML=Object.keys(LIB).map(k=>`<li>${ST[k].n}: ${LIB[k].map(v=>v[0]).join(", ")}</li>`).join("");
+
+/* ---- heart rate over Bluetooth (standard Heart Rate service) ---- */
+$("bBle").onclick=async()=>{
+ try{
+  const d=await navigator.bluetooth.requestDevice({filters:[{services:["heart_rate"]}]});
+  const s=await(await d.gatt.connect()).getPrimaryService("heart_rate");
+  const ch=await s.getCharacteristic("heart_rate_measurement");
+  await ch.startNotifications();
+  ch.addEventListener("characteristicvaluechanged",e=>{
+   const v=e.target.value,f=v.getUint8(0);let o=1;
+   S.hr=f&1?v.getUint16(o,true):v.getUint8(o);o+=f&1?2:1;
+   if(f&8)o+=2;
+   if(f&16){while(o+1<v.byteLength){rr.push(v.getUint16(o,true)/1024*1000);o+=2}rr=rr.slice(-40);
+    if(rr.length>=8){let q=0;for(let i=1;i<rr.length;i++)q+=(rr[i]-rr[i-1])**2;S.hrv=Math.sqrt(q/(rr.length-1))}}
+   S.hrT=Date.now();
+  });
+  $("bBle").classList.add("on");say("Heart-rate band connected: "+(d.name||"device")+".");
+ }catch(e){say("Bluetooth isn't available here. Use Chrome or Edge on Android or desktop and open this page directly, or try the demo.")}
+};
+
+/* ---- vocal tone from the microphone ---- */
+function pitch(b,sr){
+ const n=1024,lo=Math.floor(sr/400),hi=Math.floor(sr/80);let e=0;
+ for(let i=0;i<n;i++)e+=b[i]*b[i];
+ let best=0,bl=0;
+ for(let l=lo;l<=hi;l++){let s=0;for(let i=0;i<n;i++)s+=b[i]*b[i+l];if(s>best){best=s;bl=l}}
+ return bl&&best/e>.5?sr/bl:null}
+$("bMic").onclick=async()=>{
+ try{
+  const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false}});
+  const ac=new AudioContext(),an=ac.createAnalyser();an.fftSize=2048;
+  ac.createMediaStreamSource(st).connect(an);
+  const buf=new Float32Array(2048);mic=true;micSt=st;micAc=ac;micTm=setInterval(()=>{
+   an.getFloatTimeDomainData(buf);let e=0;for(const x of buf)e+=x*x;
+   const rms=Math.sqrt(e/buf.length);
+   if(rms>.015){const p=pitch(buf,ac.sampleRate);
+    if(p){ph.push(p);ph=ph.slice(-60);lastVoice=Date.now();loudEma=loudEma?loudEma*.9+rms*.1:rms}}
+  },100);
+  $("bMic").classList.add("on");say("Microphone on. Speak or read aloud for a few seconds.");
+ }catch(e){say("Microphone access was blocked. Allow it in your browser's site settings, or try the demo.")}
+};
+
+/* ---- demo ---- */
+$("bDemo").onclick=()=>{
+ demo=demo?null:"settled";$("bDemo").classList.toggle("on",!!demo);$("chips").hidden=!demo;
+ if(demo)say("Demo mode: choose a scenario to simulate heart and voice signals.");else{say("");["hr","hrv","pm","pv","ps","loud"].forEach(k=>S[k]=null)}
+};
+$("chips").innerHTML=Object.keys(DEMO).map(k=>`<button data-k="${k}">${ST[k].n}</button>`).join("");
+$("chips").onclick=e=>{if(e.target.dataset.k)demo=e.target.dataset.k};
+
+/* ---- estimate emotional state ---- */
+function tick(){
+ if(frozen&&!force)return;
+ const now=Date.now(),rest=+$("rest").value||68;let hr=null,hrv=null,voice=false,pm,pv,ps,loud;
+ if(demo){const d=DEMO[demo],j=(x,s)=>x+(Math.random()-.5)*s;
+  hr=j(d.hr,4);hrv=j(d.hrv,6);ps=j(d.ps,.02);pv=j(d.pv,.01);loud=j(d.loud,.006);pm=140;voice=true}
+ else{
+  if(now-S.hrT<8000){hr=S.hr;hrv=S.hrv}
+  if(mic&&ph.length>=15&&now-lastVoice<8000){
+   pm=ph.reduce((a,b)=>a+b)/ph.length;
+   pv=Math.sqrt(ph.reduce((a,b)=>a+(b-pm)**2,0)/ph.length)/pm;
+   base=base?base*.995+pm*.005:pm;ps=(pm-base)/base;loud=loudEma;voice=true}}
+ Object.assign(S,{hr,hrv,pm:voice?pm:null,pv:voice?pv:null});
+ $("rHr").textContent=hr?Math.round(hr):"–";$("rHrv").textContent=hrv?Math.round(hrv):"–";
+ $("rP").textContent=voice?Math.round(pm):"–";$("rV").textContent=voice?(pv*100).toFixed(0)+"%":"–";
+ if(hr)$("orb").style.setProperty("--dur",clamp(60/hr,.6,1.6)+"s");
+ const a=[],why=[];let val=[];
+ if(hr){const z=clamp((hr-rest)/20,-1,2);a.push(z);if(z>.5)why.push("heart rate above rest");if(z<-.3)why.push("heart rate below rest")}
+ if(hrv){const z=clamp((40-hrv)/25,-1,2);a.push(z);val.push(-z*.3);if(z>.5)why.push("low heart-rate variability");if(z<-.5)why.push("high heart-rate variability")}
+ if(voice){const en=clamp((loud-.03)/.05,-1,1.5);a.push(en);a.push(clamp(ps*8,-1,1.5));
+  const vt=clamp((pv-.09)/.05,-1.5,1.5);val.push(vt*.7);
+  if(en>.7)why.push("loud voice");if(en<-.3)why.push("quiet voice");if(pv<.06)why.push("flat tone");if(pv>.13)why.push("expressive tone");if(ps>.06)why.push("pitch above your usual");
+  S.en=en}
+ if(!a.length){$("why").textContent="Waiting for a signal from heart rate or voice.";return}
+ const A=a.reduce((x,y)=>x+y)/a.length,V=val.length?val.reduce((x,y)=>x+y):0,en=voice?S.en:0;
+ let k;
+ if(V>.5&&A>.2)k="bright";
+ else if(A>.5)k=en>.7?"heated":"unsettled";
+ else if(A<.2&&V<-.4)k="heavy";
+ else if(A>.3&&V<0)k="unsettled";
+ else k="settled";
+ const src=[(hr||hrv)&&"heart",voice&&"voice"].filter(Boolean).join(" and ");
+ S.conf=.4+.2*[hr||hrv,voice].filter(Boolean).length;
+ const reason=(why.slice(0,3).join(", ")||"steady readings")+" · from "+src;
+ if(k===cur){streak=0;cand=null;$("why").textContent=ST[k].d+" ("+reason+")";return}
+ if(k===cand)streak++;else{cand=k;streak=1}
+ if(streak>=4||!cur||force){force?cur=k:commit(k);S.reason=reason;streak=0}
+}
+function commit(k,reason){
+ cur=k;const s=ST[k];$("state").textContent=s.n;$("why").textContent=s.d+(S.reason?" ("+S.reason+")":"");
+ $("orb").style.setProperty("--c",s.c);document.documentElement.style.setProperty("--c",s.c);
+ show(true)}
+function show(advance){
+ if(!cur)return;const l=LIB[cur];idx[cur]=((idx[cur]??-1)+(advance?1:0)+l.length)%l.length;
+ const v=l[idx[cur]],box=$("verse");box.classList.add("fade");
+ setTimeout(()=>{$("vt").textContent="“"+v[1]+"”";$("vr").textContent=v[0]+" (KJV)";
+  $("vm").textContent="Chosen for a "+ST[cur].n.toLowerCase()+" moment.";box.classList.remove("fade")},350)}
+$("bNext").onclick=()=>{cur?show(true):say("Start a signal first so a verse can be matched.")};
+$("orb").style.setProperty("--c","#b8872a");
+setInterval(tick,1000);
+
+/* ---- biometric gate (WebAuthn platform authenticator: Face ID, fingerprint, Windows Hello) ---- */
+const KEY="lamplight-cred",rnd=n=>crypto.getRandomValues(new Uint8Array(n));
+const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b))),unb=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const store={get(){try{return localStorage.getItem(KEY)}catch(e){return null}},set(v){try{localStorage.setItem(KEY,v);return true}catch(e){return false}},del(){try{localStorage.removeItem(KEY)}catch(e){}}};
+async function biometric(){
+ const id=store.get();
+ if(id){await navigator.credentials.get({publicKey:{challenge:rnd(32),allowCredentials:[{type:"public-key",id:unb(id),transports:["internal"]}],userVerification:"required",timeout:60000}});return}
+ const c=await navigator.credentials.create({publicKey:{challenge:rnd(32),rp:{name:"Lamplight"},user:{id:rnd(16),name:"lamplight-user",displayName:"Lamplight"},pubKeyCredParams:[{type:"public-key",alg:-7},{type:"public-key",alg:-257}],authenticatorSelection:{authenticatorAttachment:"platform",userVerification:"required"},timeout:60000}});
+ if(!store.set(b64(c.rawId)))throw{name:"StorageError"}}
+
+/* ---- verse database + success handler ---- */
+const EMO=new Set(Object.keys(LIB)),recent=[];
+const verseDb={async query(tag,exclude){
+ const l=LIB[tag].map((v,i)=>({id:tag+i,reference:v[0],text:v[1],translation:"KJV"})).filter(v=>!exclude.includes(v.id));
+ return l[Math.floor(Math.random()*l.length)]||null}};
+function currentEmotion(){return{state:cur,confidence:cur?S.conf||0:0}}
+async function onAuthSuccess(auth,emotion,db){
+ if(!auth||auth.verified!==true)throw new Error("Biometric authentication not verified");
+ const st=String(emotion?.state??"").toLowerCase(),ok=EMO.has(st)&&Number(emotion?.confidence)>=.4,tag=ok?st:"settled";
+ const verse=await db.query(tag,recent)||await db.query(tag,[]);
+ if(!verse)throw new Error("No verses found for "+tag);
+ recent.push(verse.id);if(recent.length>6)recent.shift();
+ const s=ST[tag];
+ if(ok){cur=tag;$("state").textContent=s.n;$("why").textContent=s.d+(S.reason?" ("+S.reason+")":"");$("orb").style.setProperty("--c",s.c);document.documentElement.style.setProperty("--c",s.c)}
+ else{$("state").textContent="Welcome back";$("why").textContent="Start a signal and your verse will match how you feel."}
+ $("vt").textContent="“"+verse.text+"”";$("vr").textContent=verse.reference+" ("+verse.translation+")";
+ $("vm").textContent=ok?"Chosen for a "+s.n.toLowerCase()+" moment.":"A welcome verse while your signals warm up.";
+ $("lock").hidden=true;$("app").hidden=false}
+
+/* ---- lock screen ---- */
+let fails=0,hiddenAt=0;
+function lockLabels(){const has=!!store.get();
+ $("bUnlock").textContent=has?"Unlock with biometrics":"Set up biometric unlock";
+ $("lockSub").textContent=has?"Verify it’s you to open Lamplight.":"First time here? Register your fingerprint or face on this device to protect your readings.";
+ $("bReset").hidden=!has}
+function lock(){stopCam();stopMic();$("scan").hidden=true;$("app").hidden=true;$("lock").hidden=false;$("lockMsg").textContent="";lockLabels()}
+$("bUnlock").onclick=async()=>{
+ const m=$("lockMsg");m.textContent="";
+ try{
+  if(!(window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()))throw{name:"Unsupported"};
+  await biometric();
+  fails=0;
+  authed={verified:true,method:"webauthn"};showScan();
+ }catch(e){
+  fails++;const denied=e&&e.name==="NotAllowedError";
+  m.textContent=denied?"The biometric check was cancelled, didn’t match, or is blocked in this view. Try again, or open the page in its own tab.":"Biometric unlock isn’t available here. Use a device with Face ID, a fingerprint reader or Windows Hello, in a browser that supports passkeys.";
+  if(!denied||fails>=2)$("bSkip").hidden=false}};
+$("bSkip").onclick=()=>{authed={verified:true,method:"unsecured"};showScan()};
+$("bReset").onclick=()=>{store.del();lockLabels();$("lockMsg").textContent="Cleared. Set up biometric unlock again."};
+$("bLock").onclick=lock;
+
+/* ---- fingertip pulse scan (camera photoplethysmography) + voice mood ---- */
+let authed=null,frozen=false,force=false,camSt=null,camTm=0,micSt,micAc,micTm,xFn=null;
+const cam=$("cam"),px=$("px").getContext("2d",{willReadFrequently:true}),wv=$("wave").getContext("2d");
+["bBle","bMic","bDemo"].forEach(i=>$(i).addEventListener("click",()=>{frozen=false}));
+$("scX").onclick=()=>xFn&&xFn();$("bScan").onclick=()=>showScan();
+function setScan(t,p,g,x){$("scT").textContent=t;$("scP").textContent=p;$("scGo").textContent=g;$("scX").textContent=x;$("scM").textContent="";$("bar").style.width="0";wv.clearRect(0,0,360,90)}
+function stopCam(){clearInterval(camTm);camSt&&camSt.getTracks().forEach(t=>t.stop());camSt=null}
+function stopMic(){clearInterval(micTm);micSt&&micSt.getTracks().forEach(t=>t.stop());micAc&&micAc.close().catch(()=>{});micSt=micAc=null;mic=false;$("bMic").classList.remove("on")}
+function showScan(){$("lock").hidden=true;$("app").hidden=true;$("scan").hidden=false;frozen=false;S.hr=S.hrv=null;ph=[];intro()}
+function intro(msg){stopCam();setScan("Place your finger","Cover the rear camera and flash with your fingertip. Press lightly and hold still for 25 seconds.","Start scan","Skip heart scan");
+ $("scM").textContent=msg||"";$("scGo").hidden=false;$("scGo").onclick=startPpg;xFn=()=>voiceIntro()}
+function draw(a){
+ const s=a.slice(-150);wv.clearRect(0,0,360,90);if(s.length<20)return;
+ const y=s.map((v,i)=>{let t=0,c=0;for(let j=Math.max(0,i-15);j<Math.min(s.length,i+16);j++){t+=s[j];c++}return v-t/c});
+ const mn=Math.min(...y),sp=(Math.max(...y)-mn)||1;
+ wv.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--c")||"#b8872a";wv.lineWidth=2;wv.beginPath();
+ y.forEach((v,i)=>{const X=i/149*360,Y=84-(v-mn)/sp*78;i?wv.lineTo(X,Y):wv.moveTo(X,Y)});wv.stroke()}
+async function startPpg(){
+ const m=$("scM");$("scGo").hidden=true;$("scX").textContent="Cancel";xFn=()=>intro();
+ try{
+  camSt=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:160},height:{ideal:120}},audio:false});
+  const tr=camSt.getVideoTracks()[0];
+  try{if(tr.getCapabilities().torch)await tr.applyConstraints({advanced:[{torch:true}]})}catch(e){}
+  cam.srcObject=camSt;await cam.play();
+ }catch(e){return intro("Camera access was blocked or isn’t available. Allow it in your browser’s site settings, or open the page in its own tab.")}
+ $("scP").textContent="Cover the camera and flash with your fingertip.";
+ const T=25000,xs=[],ts=[];let t0=performance.now();
+ camTm=setInterval(()=>{
+  px.drawImage(cam,0,0,24,24);const d=px.getImageData(0,0,24,24).data;let r=0,g=0;
+  for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1]}r/=576;g/=576;
+  const t=performance.now()-t0;
+  if(r>90&&r>g*1.5){ts.push(t);xs.push(r);m.textContent="Hold still… "+Math.max(0,Math.ceil((T-t)/1000))+"s"}
+  else{ts.length=xs.length=0;t0=performance.now();m.textContent="Cover the camera and flash fully with your fingertip."}
+  $("bar").style.width=Math.min(100,t/T*100)+"%";draw(xs);
+  if(t>=T){stopCam();const res=analyze(ts,xs);res?gotHeart(res):intro("Couldn’t read a clean pulse. Press lightly, keep your finger and phone still, and try again.")}
+ },33)}
+function analyze(ts,rs){
+ const n=rs.length;if(n<200)return null;
+ const x=rs.map((v,i)=>{let a=0,c=0;for(let j=i;j>=0&&ts[i]-ts[j]<=300;j--){a+=rs[j];c++}for(let j=i+1;j<n&&ts[j]-ts[i]<=300;j++){a+=rs[j];c++}return v-a/c});
+ const y=x.map((v,i)=>i&&i<n-1?(x[i-1]+v+x[i+1])/3:v);
+ const sd=Math.sqrt(y.reduce((a,b)=>a+b*b,0)/n),pk=[];
+ for(let i=1;i<n-1;i++)if(y[i]>y[i-1]&&y[i]>=y[i+1]&&y[i]>sd*.3){
+  const l=pk[pk.length-1];
+  if(l!==undefined&&ts[i]-ts[l]<380){if(y[i]>y[l])pk[pk.length-1]=i}else pk.push(i)}
+ const ib=[];for(let i=1;i<pk.length;i++)ib.push(ts[pk[i]]-ts[pk[i-1]]);
+ const ok=ib.filter(v=>v>=400&&v<=1500);if(ok.length<15)return null;
+ const med=[...ok].sort((a,b)=>a-b)[ok.length>>1],g=ib.map(v=>Math.abs(v-med)<med*.25?v:null);
+ let q=0,c=0;for(let i=1;i<g.length;i++)if(g[i]&&g[i-1]){q+=(g[i]-g[i-1])**2;c++}
+ if(c<8)return null;
+ return{hr:60000/med,hrv:Math.sqrt(q/c)}}
+function gotHeart(r){S.hr=r.hr;S.hrv=r.hrv;S.hrT=Date.now();voiceIntro(Math.round(r.hr))}
+function voiceIntro(hr){
+ stopCam();setScan("Now, your voice",(hr?"Pulse "+hr+" bpm. ":"")+"Say a sentence or two about how today has felt, in your normal voice.","Start listening","Skip voice");
+ $("scGo").hidden=false;$("scGo").onclick=listen;xFn=()=>finish()}
+async function listen(){
+ $("scGo").hidden=true;xFn=()=>finish();
+ if(!mic)await $("bMic").onclick();
+ if(!mic)return finish("Microphone unavailable, so your mood is based on heart rate only.");
+ ph=[];const t0=Date.now();
+ const tm=setInterval(()=>{const t=Date.now()-t0;$("bar").style.width=Math.min(100,t/100)+"%";
+  $("scM").textContent=ph.length>=15?"Got it, keep going…":"Listening…";
+  if(t>=10000){clearInterval(tm);finish()}},100);
+ xFn=()=>{clearInterval(tm);finish()}}
+function finish(note){
+ cur=null;cand=null;streak=0;frozen=false;if(S.hr)S.hrT=Date.now();
+ force=true;tick();force=false;stopMic();ph=[];frozen=true;
+ onAuthSuccess(authed,{state:cur,confidence:S.conf||0},verseDb).then(()=>{$("scan").hidden=true;if(note)say(note)}).catch(e=>say(e.message))}
+document.addEventListener("visibilitychange",()=>{
+ if(document.hidden)hiddenAt=Date.now();
+ else if($("lock").hidden&&hiddenAt&&Date.now()-hiddenAt>60000)lock()});
+lockLabels();
+</script>
+</body>
+</html>
